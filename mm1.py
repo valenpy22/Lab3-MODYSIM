@@ -154,10 +154,10 @@ print(f"Numero de jobs que salieron: {Nd}")
 print(f"Tiempo total de cola vacía: {Q0}")
 print(f"Largo máximo de la cola: {max_queue_length}")
 print(f"Tiempo total de la cola con largo máximo: {Qk}")
-print(f"Utilización computada: {U}")
-print(f"Utilización teórica: {1 - (service_rate / arrival_rate)}")
-print(f"Largo promedio computado de la cola: {E_X}")
-print(f"Largo promedio teórico de la cola: {arrival_rate / (service_rate - arrival_rate)}")
+print(f"Utilización computada: {U}") #VERIFICAR
+print(f"Utilización teórica: {1 - (arrival_rate / service_rate)}")
+print(f"Largo promedio computado de la cola: {E_X}") #VERIFICAR 
+print(f"Largo promedio teórico de la cola: {arrival_rate**2 / (service_rate**2 - arrival_rate**2)}")
 print(f"Tiempo promedio computado de residencia: {E_S}")
-print(f"Tiempo promedio teórico de residencia: {1 / (service_rate - arrival_rate)}")
+print(f"Tiempo promedio teórico de residencia: {1 / service_rate}")
 
