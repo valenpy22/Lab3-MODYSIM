@@ -4,8 +4,8 @@
 # que entrega la simulación.
 
 # Autores:
-# - Diego Valdés Fernández
-# - Valentina Campos Olguín
+# - Diego Valdés Fernández 20.847.708-0
+# - Valentina Campos Olguín 21.305.689-1
 
 # Fecha: 09/08/2024
 
