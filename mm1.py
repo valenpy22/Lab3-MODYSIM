@@ -14,8 +14,6 @@ import numpy as np
 import getopt
 import sys
 
-# Establece una semilla para la reproducibilidad
-np.random.seed(0)
 # Configuración de parámetros de la simulación
 
 # Descripción: Función que se encarga de parsear los argumentos de la línea de comandos.
@@ -44,7 +42,6 @@ def parse_arguments():
     return arrival_rate, service_rate, end_time
 
 arrival_rate, service_rate, end_time = parse_arguments()
-
 
 # Validación de los parámetros
 if arrival_rate is None or service_rate is None or end_time is None:
@@ -77,7 +74,8 @@ sum_Sk = 0 # Suma de tiempos de servicio
 sum_QN = {} # Suma de QN
 QT = end_time # Tiempo total en que la cola tiene el largo máximo
 last_time = 0 # Marca de tiempo del último evento
-largo=0 # Largo de la cola cuando es mayor a 0
+arrival_times = [] # Lista de tiempos de arribo
+residence_times = [] # Tiempo de residencia
 
 # Generación de eventos de arribo
 def generate_event_time(rate):
@@ -89,6 +87,8 @@ end_simulation = end_time
 # Simulación de eventos discretos
 current_time = 0
 next_departure = float('inf')
+
+contador = 1
 
 # Mientras no se cumpla la condición de término
 while current_time < end_simulation:
@@ -102,7 +102,10 @@ while current_time < end_simulation:
             # Se genera un tiempo de servicio y se programa la nueva salida
             Sk = generate_event_time(service_rate)
             next_departure = current_time + Sk
+            # Se suma el tiempo de servicio
             sum_Sk += Sk
+            residence_times.append(Sk)
+            print(f"Tiempo de arribo: {current_time}, Tiempo de salida: {next_departure}, Tiempo de residencia: {Sk}")
             
         # Si el servidor está ocupado
         else:
@@ -121,23 +124,26 @@ while current_time < end_simulation:
     # Si el próximo evento es una salida
     else:
         current_time = next_departure
-        largo=len(queue)
         if len(queue) > 0:
             arrival_time = queue.pop(0)
             # Tiempo total que el trabajo estuvo en el sistema
             residence_time = current_time - arrival_time
+            residence_times.append(residence_time)
             # Sumar tiempo de residencia al total
             sum_Sk += residence_time
+            arrival_times.append(arrival_time)
+
+            print(f"Tiempo de arribo: {arrival_time}, Tiempo de salida: {current_time}, Tiempo de residencia: {residence_time}")
             # Se saca el primer elemento de la cola
             Qk += (current_time - arrival_time)
             # Se genera un tiempo de servicio y se programa la nueva salida
             Sk = generate_event_time(service_rate)
             next_departure = current_time + Sk
 
-
         else:
             # Se actualiza el servidor a desocupado
             Ls = 0
+            # Se programa la próxima salida como infinito
             next_departure = float('inf')
 
         Nd += 1
@@ -153,7 +159,7 @@ while current_time < end_simulation:
         Q0 += time_elapsed
 
     # Se calcula la suma de k * Qk
-    queuetime = queuetime +  largo *  time_elapsed
+    queuetime = queuetime +  len(queue) *  time_elapsed
 
     #Tiempo de la cola con su largo máximo
     #Si el largo de la cola no está en el diccionario, se agrega
@@ -164,6 +170,7 @@ while current_time < end_simulation:
     sum_QN[len(queue)]=sum_QN[len(queue)]+(current_time - last_time)
 
     last_time = current_time
+    contador += 1
 
 #Calcular cuando la cola esta vacía
 if(len(queue) == 0) :
